@@ -14,16 +14,20 @@
 #define DISCOVERY_CONSTANTS_H
 
 // constants for location_publisher_1
-static const char *k_PARTICIPANT01_NAME          = "location_publisher_1";
-static const int k_OBJ_ID_PARTICIPANT01_DW01     = 100;
+static const char *k_PARTICIPANT01_NAME             = "location_publisher_1";
+static const int k_OBJ_ID_PARTICIPANT01_DW01        = 100;
 
 // constants for location_publisher_2 
-static const char *k_PARTICIPANT02_NAME          = "location_publisher_2";
-static const int k_OBJ_ID_PARTICIPANT02_DW01     = 110;
+static const char *k_PARTICIPANT02_NAME             = "location_publisher_2";
+static const int k_OBJ_ID_PARTICIPANT02_DW01        = 110;
 
 // constants for location_subscriber
-static const char *k_PARTICIPANT03_NAME          = "location_subscriber";
-static const int k_OBJ_ID_PARTICIPANT03_DR01     = 120;
+static const char *k_PARTICIPANT03_NAME             = "location_subscriber";
+static const int k_OBJ_ID_PARTICIPANT03_DR01        = 120;
+
+// consts for rti_recording_service
+static const char *k_PARTICIPANT_RECORDING_NAME     = "rti_recording_service";
+static const int k_OBJ_ID_RECORDING_DR01            = 300;
 
 // contants for Admin Console
 static const char *k_PARTICIPANT_ADMINCONSOLE_NAME  = "Data Visualization";

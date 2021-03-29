@@ -199,12 +199,12 @@ int main(void)
     dp_qos.resource_limits.local_writer_allocation = 1;
 #ifdef ADMINCONSOLE
     dp_qos.resource_limits.remote_participant_allocation = 5;  
-    dp_qos.resource_limits.remote_reader_allocation = 4; 
+    dp_qos.resource_limits.remote_reader_allocation = 3; 
     dp_qos.resource_limits.remote_writer_allocation = 2; 
     dp_qos.resource_limits.matching_writer_reader_pair_allocation = 128;
 #else
     dp_qos.resource_limits.remote_participant_allocation = 3;
-    dp_qos.resource_limits.remote_reader_allocation = 3;
+    dp_qos.resource_limits.remote_reader_allocation = 2;
     dp_qos.resource_limits.remote_writer_allocation = 2;
 #endif
 
@@ -251,8 +251,12 @@ int main(void)
     // discovery_constants.h) that we are expecting to discover
     retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT03_NAME);
     if(retcode != DDS_RETCODE_OK) {
-        printf("ERROR: failed to assert remote participant 3\n");
+        printf("ERROR: failed to assert k_PARTICIPANT03_NAME\n");
     }
+    retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT_RECORDING_NAME);    
+    if(retcode != DDS_RETCODE_OK) {
+        printf("ERROR: failed to assert k_PARTICIPANT_RECORDING_NAME\n");
+    }    
 #ifdef ADMINCONSOLE
     retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT_ADMINCONSOLE_NAME);
     if(retcode != DDS_RETCODE_OK) {
@@ -314,13 +318,16 @@ int main(void)
 
     // When we use DPSE discovery we must manually setup information about any 
     // DataReaders we are expecting to discover, and assert them. In this 
-    // example code we will do this for 2 remote DataReaders. This information 
-    // includes a unique  object ID for the remote peer (we are defining this in 
-    // discovery_constants.h), as well as its Topic, type, and QoS. 
+    // example code we will do this for 2 remote DataReaders: the 
+    // "location_subscriber" application, and the RTI Recording Service. This 
+    // information includes a unique  object ID for the remote peer (we are 
+    // defining this in discovery_constants.h), as well as its Topic, type, 
+    // and QoS. 
 
     struct DDS_SubscriptionBuiltinTopicData rem_subscription_data =
             DDS_SubscriptionBuiltinTopicData_INITIALIZER;
 
+    // assert location_subscriber DR
     rem_subscription_data.key.value[DDS_BUILTIN_TOPIC_KEY_OBJECT_ID] = 
             k_OBJ_ID_PARTICIPANT03_DR01;
     rem_subscription_data.topic_name = DDS_String_dup(location_topic_name);
@@ -328,12 +335,26 @@ int main(void)
             DDS_String_dup(PoseTypePlugin_get_default_type_name());
     rem_subscription_data.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
 
-    // Assert that a remote DomainParticipant (with the name held in
-    // k_PARTICIANT03_NAME) will contain a DataReader described by the 
-    // information in the rem_subscription_data struct.
     retcode = DPSE_RemoteSubscription_assert(
             dp,
             k_PARTICIPANT03_NAME,
+            &rem_subscription_data,
+            Pose_get_key_kind(PoseTypePlugin_get(), NULL));
+    if (retcode != DDS_RETCODE_OK) {
+        printf("ERROR: failed to assert remote subscription #1\n");
+    }   
+
+    // assert the Recording Service DR
+    rem_subscription_data.key.value[DDS_BUILTIN_TOPIC_KEY_OBJECT_ID] = 
+            k_OBJ_ID_RECORDING_DR01;
+    rem_subscription_data.topic_name = DDS_String_dup(location_topic_name);
+    rem_subscription_data.type_name = 
+            DDS_String_dup(PoseTypePlugin_get_default_type_name());
+    rem_subscription_data.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
+
+    retcode = DPSE_RemoteSubscription_assert(
+            dp,
+            k_PARTICIPANT_RECORDING_NAME,
             &rem_subscription_data,
             Pose_get_key_kind(PoseTypePlugin_get(), NULL));
     if (retcode != DDS_RETCODE_OK) {
