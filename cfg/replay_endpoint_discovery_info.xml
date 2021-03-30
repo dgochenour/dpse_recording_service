@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<LBEDiscoveryPluginProfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="./LBEDiscoveryPluginProfile.xsd">
+
+    <participant name="location_subscriber">
+        <datareader>
+            <rtps_object_id>120</rtps_object_id>
+            <topic_name>Object Location</topic_name>
+            <type_name>Pose</type_name>
+            <topic_keyed>true</topic_keyed>
+            <reliability>
+                <kind>RELIABLE_RELIABILITY_QOS</kind>
+                <max_blocking_time>
+                    <sec>0</sec>
+                    <nanosec>100000000</nanosec>
+                </max_blocking_time>
+            </reliability>
+        </datareader>
+    </participant>
+
+</LBEDiscoveryPluginProfile>
