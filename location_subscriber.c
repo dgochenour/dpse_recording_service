@@ -183,7 +183,7 @@ int main(void)
         printf("ERROR: failed to register dpse\n");
     }
 
-    // Now that we've finsihed the changes to the registry, we will start 
+    // Now that we've finished the changes to the registry, we will start 
     // creating DDS entities. By setting autoenable_created_entities to false 
     // until all of the DDS entities are created, we limit all dynamic memory 
     // allocation to happen *before* the point where we enable everything.
@@ -261,7 +261,9 @@ int main(void)
         printf("ERROR: topic == NULL\n");
     }
 
-    // assert the remote DomainParticipant for the 2 publishing applications 
+    // assert the remote DomainParticipant for the 2 publishing applications,
+    // plus the RTI Replay Service, which could be present
+
     retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT01_NAME);
     if(retcode != DDS_RETCODE_OK) {
         printf("ERROR: failed to assert k_PARTICIPANT01_NAME\n");
@@ -269,6 +271,10 @@ int main(void)
     retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT02_NAME);
     if(retcode != DDS_RETCODE_OK) {
         printf("ERROR: failed to assert k_PARTICIPANT02_NAME\n");
+    }
+    retcode = DPSE_RemoteParticipant_assert(dp, k_PARTICIPANT_REPLAY_NAME);
+    if(retcode != DDS_RETCODE_OK) {
+        printf("ERROR: failed to assert k_PARTICIPANT_REPLAY_NAME\n");
     }
 
     // create the Subscriber
@@ -379,6 +385,24 @@ int main(void)
     retcode = DPSE_RemotePublication_assert(
             dp,
             k_PARTICIPANT02_NAME,
+            &rem_publication_data,
+            Pose_get_key_kind(PoseTypePlugin_get(), 
+            NULL));
+    if (retcode != DDS_RETCODE_OK) {
+        printf("ERROR: failed to assert remote publication\n");
+    }
+
+    // assert rti_replay_service
+    rem_publication_data.key.value[DDS_BUILTIN_TOPIC_KEY_OBJECT_ID] = 
+            k_OBJ_ID_REPLAY_DW01;
+    rem_publication_data.topic_name = DDS_String_dup(location_topic_name);
+    rem_publication_data.type_name = 
+            DDS_String_dup(PoseTypePlugin_get_default_type_name());
+    rem_publication_data.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;    
+
+    retcode = DPSE_RemotePublication_assert(
+            dp,
+            k_PARTICIPANT_REPLAY_NAME,
             &rem_publication_data,
             Pose_get_key_kind(PoseTypePlugin_get(), 
             NULL));
