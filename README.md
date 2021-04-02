@@ -23,20 +23,39 @@ All three applications interact with the "`Object Location`" Topic, which is of 
 
 ## Prepare the Micro environment
 
+### Linux
 ```
-export RTIMEHOME=/path/to/rti_connext_dds_micro-2.4.12
-export RTIMEARCH=x64Linux5gcc9.3.0
-export PATH=$RTIMEHOME/rtiddsgen/scripts:$RTIMEHOME/lib/$RTIMEARCH:$PATH
+$ export RTIMEHOME=/path/to/rti_connext_dds_micro-2.4.12
+$ export RTIMEARCH=x64Linux5gcc9.3.0
+$ export PATH=$RTIMEHOME/rtiddsgen/scripts:$RTIMEHOME/lib/$RTIMEARCH:$PATH
 ```
+### Windows
+
+- Add the equivalent to that shown above for Linux in the Windows System Environment Variables section.
 
 ## Generate type support files 
+
+### Linux
 ```
-$RTIMEHOME/rtiddsgen/scripts/rtiddsgen -micro -language C -update typefiles ./Pose.idl
+$ $RTIMEHOME/rtiddsgen/scripts/rtiddsgen -micro -language C -update typefiles ./Pose.idl
 ```
 
-## Build the Micro example applications
+### Windows
 ```
-$RTIMEHOME/resource/scripts/rtime-make --config Release --build --name $RTIMEARCH --target Linux --source-dir . -G "Unix Makefiles" --delete
+> %RTIMEHOME%\rtiddsgen\scripts\rtiddsgen -micro -language C -create typefiles Pose.idl
+```
+## Build the Micro example applications
+
+### Linux
+```
+$ cd your/project/directory
+$ $RTIMEHOME/resource/scripts/rtime-make --config Release --build --name $RTIMEARCH --target Linux --source-dir . -G "Unix Makefiles" --delete
+```
+
+### Windows
+```
+> cd your\project\directory 
+> %RTIMEHOME%\resource\scripts\rtime-make --config Release --build --name x64Win64VS2017 --target Windows --source-dir . -G "Visual Studio 15 2017 Win64" --delete
 ```
 
 ## Running Recording Service
